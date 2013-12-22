@@ -19,7 +19,6 @@ section .text
 
 _start:
 	MOV	esp, stack + STACKSIZE
-	HLT					;Will be removed shortly, only there for register debugging
 	EXTERN  _kmain
 	CALL	_kmain
 	
