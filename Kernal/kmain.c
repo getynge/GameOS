@@ -98,6 +98,6 @@ extern "C"
 int _kmain(){
     terminal_initialize();
 
-    terminal_writestring("Helo, kernal World!\n");
+    terminal_writestring("Hello, kernal World!\n");
     return 0;
 }
