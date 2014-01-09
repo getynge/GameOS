@@ -34,7 +34,9 @@ uint16_t make_vgaentry(char c, uint8_t color){
 size_t strlen(const char * str){
     size_t ret = 0;
     if(str != 0x0){
-        ret = sizeof(str)/sizeof(str[0]);
+        while(str[ret] != 0x0){
+            ret += 1;
+        }
     }
     return ret;
 }
