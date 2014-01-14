@@ -46,13 +46,21 @@ size_t terminal_row;
 size_t terminal_column;
 uint8_t terminal_color;
 uint16_t* terminal_buffer;
-
+uint8_t* keyboard_state;
+void terminal_setpos(uint8_t x, uint8_t y){
+	terminal_column = x;
+	terminal_row = y;
+}
+void terminal_newline(){
+	terminal_setpos(0, terminal_row+1);
+}
 void terminal_initialize()
 {
 	terminal_row = 0;
 	terminal_column = 0;
 	terminal_color = make_color(COLOR_LIGHT_GREY, COLOR_BLACK);
 	terminal_buffer = (uint16_t*) 0xB8000;
+	keyboard_state = (uint8_t*) 0x0064;
 	for ( size_t y = 0; y < VGA_HEIGHT; y++ )
 	{
 		for ( size_t x = 0; x < VGA_WIDTH; x++ )
@@ -91,7 +99,11 @@ void terminal_writestring(const char* data)
 {
 	size_t datalen = strlen(data);
 	for ( size_t i = 0; i < datalen; i++ )
-		terminal_putchar(data[i]);
+		if(data[i] == '\n'){
+			terminal_newline();
+		}else{
+			terminal_putchar(data[i]);
+		}
 }
 
 #if defined(__cplusplus)
@@ -99,7 +111,12 @@ extern "C"
 #endif // defined
 int _kmain(){
     terminal_initialize();
-
     terminal_writestring("Hello, kernal World!\n");
+    terminal_writestring("Beginning debug sequence\n");
+    while(true){
+	if(*keyboard_state & 0b10000000){
+		terminal_writestring("stuff was typed!");
+	}
+    }
     return 0;
 }
