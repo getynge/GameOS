@@ -27,7 +27,7 @@ typedef enum vga_color
 	COLOR_LIGHT_BROWN = 14,
 	COLOR_WHITE = 15,
 }vga_color;
-volatile uint16_t VGA_TERMINAL_BASE_IO;
+//volatile uint16_t VGA_TERMINAL_BASE_IO;
 uint8_t VGA_MAKE_COLOR(vga_color fg, vga_color bg){
     return fg | bg << 4;
 }
@@ -42,6 +42,7 @@ size_t terminal_row;
 size_t terminal_column;
 uint8_t terminal_color;
 uint16_t* terminal_buffer;
+uint16_t* terminal_invisable_buffer;
 void VGA_TERMINAL_SETPOS(uint8_t x, uint8_t y){
 	terminal_column = x;
 	terminal_row = y;
@@ -49,11 +50,18 @@ void VGA_TERMINAL_SETPOS(uint8_t x, uint8_t y){
 void VGA_TERMINAL_NEWLINE(){
 	VGA_TERMINAL_SETPOS(0, terminal_row+1);
 }
+void VGA_TERMINAL_SCROLL(int8_t direction_and_distance){
+	if(direction_and_distance & (uint8_t) 0b10000000){
+
+	}else{
+
+	}
+}
 void VGA_TERMINAL_INIT()
 {
-	uint16_t * BIO = (uint16_t*)0x0463;
-	uint16_t * BIO2 = (uint16_t*)0x0464;
-	VGA_TERMINAL_BASE_IO = (*BIO) | (*BIO2)<<8;
+	//uint16_t * BIO = (uint16_t*)0x0463;
+	//uint16_t * BIO2 = (uint16_t*)0x0464;
+	//VGA_TERMINAL_BASE_IO = (*BIO) | (*BIO2)<<8;
 	terminal_row = 0;
 	terminal_column = 0;
 	terminal_color = VGA_MAKE_COLOR(COLOR_LIGHT_GREY, COLOR_BLACK);
@@ -87,7 +95,8 @@ void VGA_TERMINAL_PUTCHAR(char c)
 		terminal_column = 0;
 		if ( ++terminal_row == VGA_HEIGHT )
 		{
-			terminal_row = 0;
+			terminal_row = VGA_HEIGHT-1;
+			
 		}
 	}
 }

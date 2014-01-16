@@ -8,4 +8,12 @@ inline uint8_t inportb(uint16_t port){
 inline void outportb(uint16_t port, uint8_t value){
 	asm volatile ("outb %%al,%%dx": :"d" (port), "a" (value));
 }
+
+inline void hang(){
+	hang:;
+	asm volatile ("cli"
+		      "hlt"
+		       : : );
+	goto hang;
+}
 #endif

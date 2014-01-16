@@ -15,9 +15,9 @@ extern "C"
 #endif // defined
 int _kmain(){
     VGA_TERMINAL_INIT();
-    if(VGA_TERMINAL_BASE_IO == 0x3D4){
+    /*if(VGA_TERMINAL_BASE_IO == 0x3D4){
 	(*writestring)("BIOS base IO is 0x3D4");
-    }
+    }*/
     outportb(PS2_CONTROLLER_STATE, PS2_DISABLE_FIRST_PORT);  //disable ports for now to prevent writing to the input buffer when we don't want it
     outportb(PS2_CONTROLLER_STATE, PS2_DISABLE_SECOND_PORT);
     inportb(PS2_CONTROLLER_DATA); //flush the input buffer by reading it
@@ -26,7 +26,10 @@ int _kmain(){
     (*writestring)("beginning debugging process\n");
     PS2_CONTROLLER_INIT();
     while(true){
-
+	uint8_t key = inportb(PS2_CONTROLLER_DATA);
+	if(key == 0x14){
+		(*writestring)("The T key was pressed\n");
+	}
     }
     return 0;
 }
