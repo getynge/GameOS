@@ -11,8 +11,8 @@ inline void outportb(uint16_t port, uint8_t value){
 
 inline void hang(){
 	hang:;
-	asm volatile ("cli"
-		      "hlt"
+	asm volatile ("cli;"
+		      "hlt;"
 		       : : );
 	goto hang;
 }

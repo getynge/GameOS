@@ -25,10 +25,37 @@ int _kmain(){
     (*writestring)("kernel has booted without error\n");
     (*writestring)("beginning debugging process\n");
     PS2_CONTROLLER_INIT();
+    (*writestring)("debugging completed, no fatal errors detected\n");
+    (*writestring)("press ENTER to finish boot\n");
+    char * cmd; //bytes 0x00100001 through 0x00100201 are reserved for command line arguments
+    cmd = (char*) 0x00100001;
+    uint16_t curpos = 0;
     while(true){
-	uint8_t key = inportb(PS2_CONTROLLER_DATA);
-	if(key == 0x14){
-		(*writestring)("The T key was pressed\n");
+	uint8_t state = inportb(PS2_CONTROLLER_STATE);
+	if(state & 0b00000001)
+	{
+		uint8_t key = inportb(PS2_CONTROLLER_DATA);
+		char res = PS2_KEYBOARD_CODE_HANDLER(0x02, key);
+		if(res == 0x0){
+			continue;
+		}
+		if(res == '\n' && debugflag == 0x1){
+			VGA_TERMINAL_CLEARBUFFER();
+			debugflag = 0;
+			(*writestring)("root@computer>");
+			continue;
+		}
+		if(res == '\n'){
+			(*writestring)("\nroot@computer>");
+			continue;
+		}
+		if(res != 0){
+			if(curpos < 512){
+				cmd[curpos] = res;
+				curpos += 1;
+				VGA_TERMINAL_PUTCHAR(res);
+			}
+		}
 	}
     }
     return 0;

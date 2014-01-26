@@ -27,6 +27,7 @@ typedef enum vga_color
 	COLOR_LIGHT_BROWN = 14,
 	COLOR_WHITE = 15,
 }vga_color;
+uint8_t debugflag = 0x1;
 //volatile uint16_t VGA_TERMINAL_BASE_IO;
 uint8_t VGA_MAKE_COLOR(vga_color fg, vga_color bg){
     return fg | bg << 4;
@@ -109,6 +110,7 @@ void VGA_TERMINAL_CLEARBUFFER(){
 			terminal_buffer[index] = 0x0;
 		}
 	}
+	VGA_TERMINAL_SETPOS(0, 0);
 }
 void VGA_TERMINAL_WRITESTRING(const char* data)
 {
