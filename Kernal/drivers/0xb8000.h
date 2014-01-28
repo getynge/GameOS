@@ -28,7 +28,14 @@ typedef enum vga_color
 	COLOR_WHITE = 15,
 }vga_color;
 uint8_t debugflag = 0x1;
-//volatile uint16_t VGA_TERMINAL_BASE_IO;
+volatile uint16_t VGA_TERMINAL_BASE_IO;
+void VGA_TERMINAL_UPDATE_CURSOR(uint8_t row, uint8_t col){
+    uint16_t position = (row*80) + col;
+    outportb(VGA_TERMINAL_BASE_IO, 0x0F);
+    outportb((VGA_TERMINAL_BASE_IO+1), (uint8_t)(position&0xFF));
+    outportb(VGA_TERMINAL_BASE_IO, 0x0E);
+    outportb((VGA_TERMINAL_BASE_IO+1), (uint8_t)((position>>8)&0xFF));
+}
 uint8_t VGA_MAKE_COLOR(vga_color fg, vga_color bg){
     return fg | bg << 4;
 }
@@ -47,9 +54,11 @@ uint16_t* terminal_invisable_buffer;
 void VGA_TERMINAL_SETPOS(uint8_t x, uint8_t y){
 	terminal_column = x;
 	terminal_row = y;
+	VGA_TERMINAL_UPDATE_CURSOR(y, x);
 }
 void VGA_TERMINAL_NEWLINE(){
 	VGA_TERMINAL_SETPOS(0, terminal_row+1);
+	
 }
 void VGA_TERMINAL_SCROLL(int8_t direction_and_distance){
 	if(direction_and_distance & (uint8_t) 0b10000000){
@@ -60,9 +69,11 @@ void VGA_TERMINAL_SCROLL(int8_t direction_and_distance){
 }
 void VGA_TERMINAL_INIT()
 {
-	//uint16_t * BIO = (uint16_t*)0x0463;
-	//uint16_t * BIO2 = (uint16_t*)0x0464;
-	//VGA_TERMINAL_BASE_IO = (*BIO) | (*BIO2)<<8;
+	uint8_t * BIO = (uint8_t*)0x0463;
+	uint8_t * BIO2 = (uint8_t*)0x0464;
+	uint8_t bio = *BIO;
+	uint8_t bio2 = *BIO2;
+	VGA_TERMINAL_BASE_IO = bio | (bio2<<8);
 	terminal_row = 0;
 	terminal_column = 0;
 	terminal_color = VGA_MAKE_COLOR(COLOR_LIGHT_GREY, COLOR_BLACK);
@@ -100,6 +111,7 @@ void VGA_TERMINAL_PUTCHAR(char c)
 			
 		}
 	}
+	VGA_TERMINAL_UPDATE_CURSOR(terminal_row, terminal_column);
 }
 void VGA_TERMINAL_CLEARBUFFER(){
 	for ( size_t y = 0; y < VGA_HEIGHT; y++ )

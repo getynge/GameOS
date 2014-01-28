@@ -120,6 +120,26 @@ char PS2_KEYBOARD_CODE_HANDLER(uint8_t mode, uint8_t code){
 			return '\n';
 		case 0x2C:
 			return 't';
+		case 0x32:
+			return 'b';
+		case 0x35:
+			return 'y';
+		case 0x3C:
+			return 'u';
+		case 0x44:
+			return 'o';
+		case 0x4D:
+			return 'p';
+		case 0x42:
+			return 'k';
+		case 0x34:
+			return 'g';
+		case 0x1C:
+			return 'a';
+		case 0x24:
+			return 'e';
+		case 0x29:
+			return ' ';
 		default:
 			return 0x0;
 		}
