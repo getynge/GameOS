@@ -111,35 +111,87 @@ void PS2_CONTROLLER_INIT(){
 		(*writestring)("PS/2 port two (assumed mouse) has been enabled\n");
 	}
 	outportb(PS2_CONTROLLER_DATA, 0x02);
-	outportb(PS2_CONTROLLER_DATA, PS2_SET_SCAN_CODE_SET); 
+	outportb(PS2_CONTROLLER_DATA, PS2_SET_SCAN_CODE_SET);
 }
+/*
+    switch case for keyboard input, in order from most frequent characters to least frequent
+    This is in the English language, and this order directive does not include special characters
+*/
 char PS2_KEYBOARD_CODE_HANDLER(uint8_t mode, uint8_t code){
 	if(mode == 0x02){
 		switch(code){
+        case 0x24:
+            return 'e';
+        case 0x2C:
+            return 't';
+        case 0x1C:
+            return 'a';
+        case 0x44:
+            return 'o';
+        case 0x43:
+            return 'i';
+        case 0x31:
+            return 'n';
+        case 0x1B:
+            return 's';
+        case 0x33:
+            return 'h';
+        case 0x2D:
+            return 'r';
+        case 0x23:
+            return 'd';
+        case 0x4B:
+            return 'l';
+        case 0x21:
+            return 'c';
+        case 0x3C:
+            return 'u';
+        case 0x3A:
+            return 'm';
+        case 0x1D:
+            return 'w';
+        case 0x2B:
+            return 'f';
+        case 0x34:
+            return 'g';
+        case 0x35:
+            return 'y';
+        case 0x4D:
+            return 'p';
+        case 0x32:
+            return 'b';
+        case 0x2A:
+            return 'v';
+        case 0x42:
+            return 'k';
+        case 0x3B:
+            return 'j';
+        case 0x22:
+            return 'x';
+        case 0x15:
+			return 'q';
+        case 0x1A:
+            return 'z';
 		case 0x5A:
 			return '\n';
-		case 0x2C:
-			return 't';
-		case 0x32:
-			return 'b';
-		case 0x35:
-			return 'y';
-		case 0x3C:
-			return 'u';
-		case 0x44:
-			return 'o';
-		case 0x4D:
-			return 'p';
-		case 0x42:
-			return 'k';
-		case 0x34:
-			return 'g';
-		case 0x1C:
-			return 'a';
-		case 0x24:
-			return 'e';
-		case 0x29:
-			return ' ';
+        case 0x54:
+            return '[';
+        case 0x5B:
+            return ']';
+        case 0x5D:
+            return '\\';
+        case 0x4C:
+            return ';';
+        case 0x52:
+            return '\'';
+        case 0x41:
+            return ',';
+        case 0x49:
+            return '.';
+        case 0x4A:
+            return '/';
+        case 0x29:
+            return ' ';
 		default:
 			return 0x0;
 		}

@@ -31,6 +31,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="drivers/0xb8000.h" />
+		<Unit filename="drivers/ACPI.h" />
+		<Unit filename="drivers/PS2.h" />
+		<Unit filename="drivers/asmio.h" />
 		<Unit filename="kmain.c">
 			<Option compilerVar="CC" />
 		</Unit>
