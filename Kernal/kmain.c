@@ -1,5 +1,7 @@
 #include "drivers/0xb8000.h"
 #include "drivers/PS2.h"
+uint16_t LMem;
+uint32_t HMem;
 size_t strlen(const char * str){
     size_t ret = 0;
     if(str != 0x0){
@@ -14,6 +16,14 @@ void (*writestring)(const char * data);
 extern "C"
 #endif // defined
 int _kmain(){
+    (*writestring)("Polling for low memory...");
+    LMem = LowMemCNT();
+    if(LMem <= 0x0){
+        (*writestring)("Polling failed, will halt");
+        hang();
+    }else{
+        (*writestring)("Low memory existent allocated\n");
+    }
     VGA_TERMINAL_INIT();
     outportb(PS2_CONTROLLER_STATE, PS2_DISABLE_FIRST_PORT);  //disable ports for now to prevent writing to the input buffer when we don't want it
     outportb(PS2_CONTROLLER_STATE, PS2_DISABLE_SECOND_PORT);
@@ -23,15 +33,15 @@ int _kmain(){
     (*writestring)("beginning debugging process\n");
     PS2_CONTROLLER_INIT();
     if(VGA_TERMINAL_BASE_IO == 0x3D4){
-	(*writestring)("BIOS base IO is 0x3D4\n");
+        (*writestring)("BIOS base IO is 0x3D4\n");
     }else{
-	(*writestring)("BIOS base port is not standard\n");
-	(*writestring)("Will use non-standard base port call\n");
+        (*writestring)("BIOS base port is not standard\n");
+        (*writestring)("Will use non-standard base port call\n");
     }
     (*writestring)("debugging completed, no fatal errors detected\n");
     (*writestring)("press ENTER to finish boot\n");
     char * cmd; //bytes 0x00100001 through 0x00100201 are reserved for command line arguments
-    
+
     cmd = (char*) 0x00100001;
     uint16_t curpos = 0;
     while(true){

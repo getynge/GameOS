@@ -50,7 +50,10 @@ size_t terminal_row;
 size_t terminal_column;
 uint8_t terminal_color;
 uint16_t* terminal_buffer;
-uint16_t* terminal_invisable_buffer;
+uint16_t* terminal_scroll_buffer;
+/**
+*Set the buffer location on which the next character will be placed.
+**/
 void VGA_TERMINAL_SETPOS(uint8_t x, uint8_t y){
 	terminal_column = x;
 	terminal_row = y;
@@ -58,11 +61,27 @@ void VGA_TERMINAL_SETPOS(uint8_t x, uint8_t y){
 }
 void VGA_TERMINAL_NEWLINE(){
 	VGA_TERMINAL_SETPOS(0, terminal_row+1);
-	
+
+}
+/**
+Short for Horizontal Push, takes a whole line from the top of the primary buffer and moves it to the bottom of the
+scroll buffer, the entire scroll buffer is moved up one line before the content is pushed to it, and the
+entire primary buffer is moved up one line after the content is pushed to the scroll buffer.
+**/
+void VGA_BUFFER_HPUSH(){
+
+}
+/**
+short for Horizontal Pop, takes a whole line from the bottom of the scroll buffer and moves it to the top of the primary buffer,
+**/
+void VGA_BUFFER_HPOP(){
+
 }
 void VGA_TERMINAL_SCROLL(int8_t direction_and_distance){
+    ///If the sign bit is set, move up, if it is clear move down.
 	if(direction_and_distance & (uint8_t) 0b10000000){
-
+        int8_t nextx = direction_and_distance
+        VGA_TERMINAL_SETPOS()
 	}else{
 
 	}
@@ -108,7 +127,7 @@ void VGA_TERMINAL_PUTCHAR(char c)
 		if ( ++terminal_row == VGA_HEIGHT )
 		{
 			terminal_row = VGA_HEIGHT-1;
-			
+
 		}
 	}
 	VGA_TERMINAL_UPDATE_CURSOR(terminal_row, terminal_column);
