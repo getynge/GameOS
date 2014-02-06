@@ -80,23 +80,24 @@ void VGA_BUFFER_HPOP(){
 void VGA_TERMINAL_SCROLL(int8_t direction_and_distance){
     ///If the sign bit is set, move up, if it is clear move down.
 	if(direction_and_distance & (uint8_t) 0b10000000){
-        int8_t nextx = direction_and_distance
-        VGA_TERMINAL_SETPOS()
+        
+        
 	}else{
 
 	}
 }
 void VGA_TERMINAL_INIT()
 {
+	
+	terminal_row = 0;
+	terminal_column = 0;
+	terminal_color = VGA_MAKE_COLOR(COLOR_LIGHT_GREY, COLOR_BLACK);
+	terminal_buffer = (uint16_t*) 0xB8000;
 	uint8_t * BIO = (uint8_t*)0x0463;
 	uint8_t * BIO2 = (uint8_t*)0x0464;
 	uint8_t bio = *BIO;
 	uint8_t bio2 = *BIO2;
 	VGA_TERMINAL_BASE_IO = bio | (bio2<<8);
-	terminal_row = 0;
-	terminal_column = 0;
-	terminal_color = VGA_MAKE_COLOR(COLOR_LIGHT_GREY, COLOR_BLACK);
-	terminal_buffer = (uint16_t*) 0xB8000;
 	for ( size_t y = 0; y < VGA_HEIGHT; y++ )
 	{
 		for ( size_t x = 0; x < VGA_WIDTH; x++ )
